@@ -1,0 +1,55 @@
+{
+  // ============================================================
+  //  这个文件夹永久使用 conda 的 dl 环境
+  //  dl = Python 3.12.15 + torch 2.6.0+cu124 + d2l
+  //  改这里之前先想清楚：换错环境会 import torch 失败
+  // ============================================================
+
+  // 旧版 Python 扩展的设置（保留兼容）
+  "python.defaultInterpreterPath": "/home/yohan/miniforge3/envs/dl/bin/python",
+
+  // ---- 新版 Python Environments 扩展的设置 ----
+  // 告诉它去哪里找 conda 环境。
+  // 不配这个，它会找不到环境而回退到 /usr/bin/python3（系统 Python，没有 torch）
+  "python-envs.globalSearchPaths": [
+    "/home/yohan/miniforge3/envs"
+  ],
+  "python-envs.workspaceSearchPaths": [
+    ".venv",
+    "*/.venv",
+    "/home/yohan/miniforge3/envs"
+  ],
+
+  // 这个项目默认用 conda 管理环境
+  "python-envs.defaultEnvManager": "ms-python.python:conda",
+
+  // 显式绑定：本项目 -> dl 环境
+  "python-envs.pythonProjects": [
+    {
+      "path": ".",
+      "envManager": "ms-python.python:conda",
+      "packageManager": "ms-python.python:pip"
+    }
+  ],
+
+  // ============================================================
+  //  Ruff 关掉（重要）
+  //
+  //  原因：Ruff 是独立进程，只能处理磁盘上的真实文件。
+  //        而 #%% 交互窗口是"虚拟文档"（untitled:/Interactive-1.interactive），
+  //        Ruff 一收到它就报错：
+  //          ERROR: Text document URI does not point to a text document
+  //        结果每跑一次代码就弹一次 "Ruff encountered a problem"。
+  //
+  //  关掉的代价：少了"未使用导入""导入排序"这类风格提示。
+  //  不影响：Pylance 的类型检查照常工作，代码运行完全不受影响。
+  //  想开回来：把这行改成 true。
+  // ============================================================
+  "ruff.enable": false,
+
+  // ---- 其它 ----
+  "python.analysis.diagnosticMode": "openFilesOnly",
+  "python.analysis.typeCheckingMode": "basic",
+  "files.encoding": "utf8",
+  "files.eol": "\n"
+}
